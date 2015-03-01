@@ -1,0 +1,120 @@
+data:
+  image: debian
+  volumes:
+    - .:/var/www:rw
+
+dbData:
+  image: postgres
+  volumes:
+    - /var/lib/postgresql/data
+  command: /bin/echo PostgreSQL Data-only container for db
+
+db:
+  image: postgres
+  environment:
+    - POSTGRES_USER=symfony
+    - POSTGRES_PASSWORD=symfonypass
+  volumes_from:
+    - dbData
+
+dbAmbassador:
+  image: cpuguy83/docker-grand-ambassador
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  command: -name iglesiasdeldiosvivo_db_1
+
+php:
+  image: estebanmatias92/hhvm-improved:fastcgi
+  environment:
+    - DATE_TIMEZONE="UTC"
+    - SERVER_PORT=9000
+  volumes_from:
+    - data
+  links:
+    - dbAmbassador:postgres
+  working_dir: /var/www
+  entrypoint:
+    - dockerize
+    - -template
+    - docker/config/hhvm/php.tmpl:/etc/hhvm/php.ini
+    - /usr/local/bin/hhvm
+  command: -m server
+
+phpAmbassador:
+  image: cpuguy83/docker-grand-ambassador
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  command: -name iglesiasdeldiosvivo_php_1
+
+server:
+  image: estebanmatias92/nginx
+  environment:
+    - FASTCGI_PASS_ADDRESS_IP=hhvm
+    - FASTCGI_PASS_ADDRESS_PORT=9000
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes_from:
+    - data
+  links:
+    - phpAmbassador:hhvm
+  working_dir: /var/www
+  entrypoint:
+    - dockerize
+    - -template
+    - docker/config/nginx/nginx.tmpl:/etc/nginx/nginx.conf
+    - -template 
+    - docker/config/nginx/default.tmpl:/etc/nginx/sites-enabled/default
+    - /usr/sbin/nginx
+
+composer:
+  image: estebanmatias92/composer-improved
+  environment:
+    - PROJECT_SOURCE=symfony-cmf/standard-edition
+    - SOURCE_TYPE=composer
+    - PROJECT_VERSION=~1.2
+    - INSTALL_FLAGS=--prefer-dist
+  volumes_from:
+    - data
+  working_dir: /var/www
+  mem_limit: 256M
+  command: --version
+
+console:
+  image: estebanmatias92/hhvm-improved
+  volumes_from:
+    - data
+  links:
+    - dbAmbassador:postgres
+  working_dir: /var/www
+  entrypoint:
+    - dockerize
+    - -template
+    - docker/config/hhvm/symfony-console/php.tmpl:/etc/hhvm/php.ini
+    - hhvm
+    - app/console
+  command: --version
+
+phpunit:
+  image: estebanmatias92/hhvm-improved
+  volumes_from:
+    - data
+  working_dir: /var/www
+  entrypoint:
+    - dockerize
+    - -template
+    - docker/config/hhvm/phpunit/php.tmpl:/etc/hhvm/php.ini
+    - bin/phpunit
+  command: --version
+
+codecept:
+  image: estebanmatias92/hhvm-improved
+  volumes_from:
+    - data
+  working_dir: /var/www
+  entrypoint:
+    - dockerize
+    - -template
+    - docker/config/hhvm/codeception/php.tmpl:/etc/hhvm/php.ini
+    - bin/codecept
+  command: --version

@@ -1,0 +1,28 @@
+; php options
+;pid = /var/run/hhvm.pid
+session.save_handler = files
+session.save_path = /var/lib/php5
+session.gc_maxlifetime = 1440
+
+; Symfony requirements
+date.timezone = {{ .Env.DATE_TIMEZONE }}
+short_open_tag = Off
+magic_quotes_gpc = Off
+register_globals = Off
+session.auto_start = Off
+
+; hhvm specific
+hhvm.log.level = Warning
+hhvm.log.always_log_unhandled_exceptions = true
+hhvm.log.runtime_error_reporting_level = 8191
+hhvm.log.use_log_file = true
+hhvm.log.file = /dev/stderr
+hhvm.mysql.typed_results = false
+hhvm.libxml.ext_entity_whitelist = file,http
+
+hhvm.server.type = fastcgi
+hhvm.server.port = {{ .Env.SERVER_PORT }}
+
+hhvm.dynamic_extension_path = /etc/hhvm/extensions
+hhvm.dynamic_extensions[pgsql] = pgsql.so
+hhvm.dynamic_extensions[mongo] = mongo.so
