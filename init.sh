@@ -26,4 +26,4 @@ docker-compose up -d data dbData db dbAmbassador php phpAmbassador server
 #docker-compose run --rm console doctrine:database:create
 sleep 60 && docker-compose run --rm console doctrine:phpcr:init:dbal
 docker-compose run --rm console doctrine:phpcr:repository:init
-docker-compose run --rm console doctrine:phpcr:f:ixtures:load
+docker-compose run --rm console doctrine:phpcr:fixtures:load
