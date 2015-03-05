@@ -73,7 +73,7 @@ composer:
     - PROJECT_SOURCE=symfony-cmf/standard-edition
     - SOURCE_TYPE=composer
     - PROJECT_VERSION=~1.2
-    - INSTALL_FLAGS=--no-interaction --prefer-dist
+    - INSTALL_FLAGS="--no-interaction --prefer-dist"
   volumes_from:
     - data
   working_dir: /var/www
