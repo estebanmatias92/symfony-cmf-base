@@ -73,11 +73,11 @@ composer:
     - PROJECT_SOURCE=symfony-cmf/standard-edition
     - SOURCE_TYPE=composer
     - PROJECT_VERSION=~1.2
-    - INSTALL_FLAGS=--prefer-dist
+    - INSTALL_FLAGS=--no-interaction --prefer-dist
   volumes_from:
     - data
   working_dir: /var/www
-  mem_limit: 256M
+  mem_limit: 512M
   command: --version
 
 console:
