@@ -22,7 +22,5 @@ if [ "$DEPLOY_ENV" == "prod" ]; then
 fi
 
 # Set up database
-#docker-compose run --rm console doctrine:database:create
-docker-compose run --rm console doctrine:phpcr:init:dbal
 docker-compose run --rm console doctrine:phpcr:repository:init
-docker-compose run --rm console doctrine:phpcr:fixtures:load
+docker-compose run --rm console --no-interaction doctrine:phpcr:fixtures:load

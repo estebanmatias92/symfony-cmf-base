@@ -78,6 +78,9 @@ composer:
     - data
   working_dir: /var/www
   mem_limit: 512M
+  entrypoint:
+    - /entrypoint.sh
+    - composer
   command: --version
 
 console:
