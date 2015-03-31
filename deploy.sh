@@ -6,6 +6,9 @@ else
     DEPLOY_ENV="$1"
 fi
 
+# Config docker-compose.yml
+sed -i 's|{project_name}|'$(basename $(pwd))'|g' docker-compose.yml
+
 # Init services
 docker-compose up -d data dbData db dbAmbassador php phpAmbassador server
 

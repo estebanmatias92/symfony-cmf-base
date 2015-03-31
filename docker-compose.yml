@@ -21,7 +21,7 @@ dbAmbassador:
   image: cpuguy83/docker-grand-ambassador
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-  command: -name iglesiasdeldiosvivo_db_1
+  command: -name {project_name}_db_1
 
 php:
   image: estebanmatias92/hhvm-improved:fastcgi
@@ -44,7 +44,7 @@ phpAmbassador:
   image: cpuguy83/docker-grand-ambassador
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-  command: -name iglesiasdeldiosvivo_php_1
+  command: -name {project_name}_php_1
 
 server:
   image: estebanmatias92/nginx
